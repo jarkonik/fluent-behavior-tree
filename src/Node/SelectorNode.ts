@@ -9,52 +9,54 @@ import ParentBehaviorTreeNodeInterface from "./ParentBehaviorTreeNodeInterface";
  *
  * @property {string} name - The name of the node.
  */
-export default class SelectorNode implements ParentBehaviorTreeNodeInterface {
-    /**
-     * List of child nodes.
-     *
-     * @type {BehaviorTreeNodeInterface[]}
-     */
-    private children: BehaviorTreeNodeInterface[] = [];
+export default class SelectorNode<T>
+  implements ParentBehaviorTreeNodeInterface<T> {
+  /**
+   * List of child nodes.
+   *
+   * @type {BehaviorTreeNodeInterface[]}
+   */
+  private children: Array<BehaviorTreeNodeInterface<T>> = [];
 
-    /**
-     * Enumerator to keep state
-     */
-    private enumerator?: NodeEnumerator;
+  /**
+   * Enumerator to keep state
+   */
+  private enumerator?: NodeEnumerator<T>;
 
-    public constructor(public readonly name: string, private readonly keepState: boolean = false) {
+  public constructor(
+    public readonly name: string,
+    private readonly keepState: boolean = false,
+  ) {}
+
+  public init(): void {
+    this.enumerator = new NodeEnumerator(this.children);
+  }
+
+  public async tick(state: StateData<T>): Promise<BehaviorTreeStatus> {
+    if (!this.enumerator || !this.keepState) {
+      this.init();
     }
 
-    public init(): void {
-        this.enumerator = new NodeEnumerator(this.children);
+    if (!this.enumerator.current) {
+      return BehaviorTreeStatus.Running;
     }
 
-    public async tick(state: StateData): Promise<BehaviorTreeStatus> {
-        if (!this.enumerator || !this.keepState) {
-            this.init();
+    do {
+      const status = await this.enumerator.current.tick(state);
+      if (status !== BehaviorTreeStatus.Failure) {
+        if (status === BehaviorTreeStatus.Success) {
+          this.enumerator.reset();
         }
 
-        if (!this.enumerator.current) {
-            return BehaviorTreeStatus.Running;
-        }
+        return status;
+      }
+    } while (this.enumerator.next());
+    this.enumerator.reset();
 
-        do {
-            const status = await this.enumerator.current.tick(state);
-            if (status !== BehaviorTreeStatus.Failure) {
-                if (status === BehaviorTreeStatus.Success) {
-                    this.enumerator.reset();
-                }
+    return BehaviorTreeStatus.Failure;
+  }
 
-                return status;
-            }
-
-        } while (this.enumerator.next());
-        this.enumerator.reset();
-
-        return BehaviorTreeStatus.Failure;
-    }
-
-    public addChild(child: BehaviorTreeNodeInterface): void {
-        this.children.push(child);
-    }
+  public addChild(child: BehaviorTreeNodeInterface<T>): void {
+    this.children.push(child);
+  }
 }

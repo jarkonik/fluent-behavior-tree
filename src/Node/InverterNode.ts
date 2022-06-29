@@ -10,35 +10,35 @@ import ParentBehaviorTreeNodeInterface from "./ParentBehaviorTreeNodeInterface";
  *
  * @property {string} name - The name of the node
  */
-export default class InverterNode implements ParentBehaviorTreeNodeInterface {
-    /**
-     * The child to be inverted
-     */
-    private childNode?: BehaviorTreeNodeInterface;
+export default class InverterNode<T>
+  implements ParentBehaviorTreeNodeInterface<T> {
+  /**
+   * The child to be inverted
+   */
+  private childNode?: BehaviorTreeNodeInterface<T>;
 
-    public constructor(public readonly name: string) {
+  public constructor(public readonly name: string) {}
+
+  public async tick(state: StateData<T>): Promise<BehaviorTreeStatus> {
+    if (!this.childNode) {
+      throw new BehaviorTreeError(Errors.INVERTER_NO_CHILDREN);
     }
 
-    public async tick(state: StateData): Promise<BehaviorTreeStatus> {
-        if (!this.childNode) {
-            throw new BehaviorTreeError(Errors.INVERTER_NO_CHILDREN);
-        }
-
-        const result = await this.childNode.tick(state);
-        if (result === BehaviorTreeStatus.Failure) {
-            return BehaviorTreeStatus.Success;
-        } else if (result === BehaviorTreeStatus.Success) {
-            return BehaviorTreeStatus.Failure;
-        }
-
-        return result;
+    const result = await this.childNode.tick(state);
+    if (result === BehaviorTreeStatus.Failure) {
+      return BehaviorTreeStatus.Success;
+    } else if (result === BehaviorTreeStatus.Success) {
+      return BehaviorTreeStatus.Failure;
     }
 
-    public addChild(child: BehaviorTreeNodeInterface): void {
-        if (!!this.childNode) {
-            throw new BehaviorTreeError(Errors.INVERTER_MULTIPLE_CHILDREN);
-        }
+    return result;
+  }
 
-        this.childNode = child;
+  public addChild(child: BehaviorTreeNodeInterface<T>): void {
+    if (!!this.childNode) {
+      throw new BehaviorTreeError(Errors.INVERTER_MULTIPLE_CHILDREN);
     }
+
+    this.childNode = child;
+  }
 }
