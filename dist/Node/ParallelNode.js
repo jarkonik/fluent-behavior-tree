@@ -29,6 +29,7 @@ class ParallelNode {
          */
         this.children = [];
     }
+    reset() { }
     tick(state) {
         return __awaiter(this, void 0, void 0, function* () {
             const statuses = yield Promise.all(this.children.map((c) => this.tickChildren(state, c)));

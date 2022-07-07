@@ -21,6 +21,7 @@ export default class SequenceNode<T> implements ParentBehaviorTreeNodeInterface<
      */
     private enumerator?;
     constructor(name: string, keepState?: boolean);
+    reset(): void;
     init(): void;
     tick(state: StateData<T>): Promise<BehaviorTreeStatus>;
     addChild(child: BehaviorTreeNodeInterface<T>): void;

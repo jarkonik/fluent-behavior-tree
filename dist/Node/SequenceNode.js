@@ -27,6 +27,9 @@ class SequenceNode {
          */
         this.children = [];
     }
+    reset() {
+        this.enumerator.reset();
+    }
     init() {
         this.enumerator = new NodeEnumerator_1.default(this.children);
     }

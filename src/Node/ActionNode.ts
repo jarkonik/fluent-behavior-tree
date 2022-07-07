@@ -16,6 +16,8 @@ export default class ActionNode<T> implements BehaviorTreeNodeInterface<T> {
     public readonly fn: (state: StateData<T>) => Promise<BehaviorTreeStatus>,
   ) {}
 
+  public reset(): void {}
+
   public async tick(state: StateData<T>): Promise<BehaviorTreeStatus> {
     const result = await this.fn(state);
     if (!result) {

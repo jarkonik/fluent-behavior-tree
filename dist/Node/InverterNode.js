@@ -21,6 +21,7 @@ class InverterNode {
     constructor(name) {
         this.name = name;
     }
+    reset() { }
     tick(state) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.childNode) {

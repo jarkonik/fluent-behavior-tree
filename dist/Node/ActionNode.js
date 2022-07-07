@@ -22,6 +22,7 @@ class ActionNode {
         this.name = name;
         this.fn = fn;
     }
+    reset() { }
     tick(state) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.fn(state);

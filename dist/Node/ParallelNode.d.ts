@@ -20,6 +20,7 @@ export default class ParallelNode<T> implements ParentBehaviorTreeNodeInterface<
      */
     private children;
     constructor(name: string, requiredToFail: number, requiredToSucceed: number);
+    reset(): void;
     tick(state: StateData<T>): Promise<BehaviorTreeStatus>;
     addChild(child: BehaviorTreeNodeInterface<T>): void;
     private tickChildren;

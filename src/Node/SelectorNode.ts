@@ -28,6 +28,10 @@ export default class SelectorNode<T>
     private readonly keepState: boolean = false,
   ) {}
 
+  public reset(): void {
+    this.enumerator.reset();
+  }
+
   public init(): void {
     this.enumerator = new NodeEnumerator(this.children);
   }

@@ -19,6 +19,8 @@ export default class InverterNode<T>
 
   public constructor(public readonly name: string) {}
 
+  public reset(): void {}
+
   public async tick(state: StateData<T>): Promise<BehaviorTreeStatus> {
     if (!this.childNode) {
       throw new BehaviorTreeError(Errors.INVERTER_NO_CHILDREN);

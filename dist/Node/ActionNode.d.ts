@@ -11,5 +11,6 @@ export default class ActionNode<T> implements BehaviorTreeNodeInterface<T> {
     readonly name: string;
     readonly fn: (state: StateData<T>) => Promise<BehaviorTreeStatus>;
     constructor(name: string, fn: (state: StateData<T>) => Promise<BehaviorTreeStatus>);
+    reset(): void;
     tick(state: StateData<T>): Promise<BehaviorTreeStatus>;
 }

@@ -25,6 +25,8 @@ export default class ParallelNode<T>
     public readonly requiredToSucceed: number,
   ) {}
 
+  public reset(): void {}
+
   public async tick(state: StateData<T>): Promise<BehaviorTreeStatus> {
     const statuses: BehaviorTreeStatus[] = await Promise.all(
       this.children.map((c) => this.tickChildren(state, c)),

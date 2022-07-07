@@ -14,6 +14,7 @@ export default class InverterNode<T> implements ParentBehaviorTreeNodeInterface<
      */
     private childNode?;
     constructor(name: string);
+    reset(): void;
     tick(state: StateData<T>): Promise<BehaviorTreeStatus>;
     addChild(child: BehaviorTreeNodeInterface<T>): void;
 }
